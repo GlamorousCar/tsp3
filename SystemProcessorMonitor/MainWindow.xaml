@@ -73,11 +73,6 @@
                     <Button Content="Refresh" Width="100" Margin="5" Click="RefreshButton_Click"/>
                 </StackPanel>
 
-                <!--- Подробная информация о процессе -->
-                <StackPanel>
-
-                </StackPanel>
-
                 <!--- Логи -->
                 <StackPanel>
                     <TextBlock x:Name="LogsTextBox">Logs</TextBlock>

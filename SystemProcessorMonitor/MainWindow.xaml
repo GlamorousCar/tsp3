@@ -4,16 +4,34 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SystemProcessorMonitor"
+        xmlns:fa="http://schemas.fontawesome.io/icons/"        
         mc:Ignorable="d"
         Title="MainWindow" Height="650" Width="1000">
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
 
-        <!-- Список процессов -->
-        <DataGrid x:Name="ProcessList" 
+        <!-- Спиннер в центре окна -->
+        <Grid x:Name="SpinnerGrid" 
+              Panel.ZIndex="10"
+              Background="#80FFFFFF" 
+              Visibility="Collapsed">
+            <fa:ImageAwesome Icon="Spinner" 
+                             Spin="True" 
+                             SpinDuration="4" 
+                             Width="50" 
+                             Height="50" 
+                             HorizontalAlignment="Center" 
+                             VerticalAlignment="Center" 
+                             Foreground="#007ACC"/>
+        </Grid>
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Список процессов -->
+            <DataGrid x:Name="ProcessList" 
                   Grid.Row="0" 
                   AutoGenerateColumns="False" 
                   ItemsSource="{Binding Processes}"
@@ -22,49 +40,50 @@
                   Margin="10"
                   MouseDoubleClick="ProcessList_MouseDoubleClick">
 
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="PID" Binding="{Binding PID}" Width="100"/>
-                <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="200"/>
-                <DataGridTextColumn Header="Memory (MB)" Binding="{Binding Memory}" Width="150"/>
-                <DataGridTextColumn Header="CPU (%)" Binding="{Binding CPU}" Width="100"/>
-            </DataGrid.Columns>
-        </DataGrid>
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="PID" Binding="{Binding PID}" Width="100"/>
+                    <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="200"/>
+                    <DataGridTextColumn Header="Memory (MB)" Binding="{Binding Memory}" Width="150"/>
+                    <DataGridTextColumn Header="CPU (%)" Binding="{Binding CPU}" Width="100"/>
+                </DataGrid.Columns>
+            </DataGrid>
 
-        <!-- Панель управления -->
-        <StackPanel Grid.Row="1" Orientation="Vertical" Margin="10">
-            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                <Button Content="End Process" Width="100" Margin="5" Click="EndProcess_Click"/>
-                <Button Content="Change Priority" Width="120" Margin="5" Click="ChangePriority_Click"/>
-                <!-- ComboBox для выбора приоритета -->
-                <ComboBox x:Name="PriorityComboBox" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" Margin="10,10,0,0">
-                    <ComboBoxItem Content="Low" />
-                    <ComboBoxItem Content="Below Normal" />
-                    <ComboBoxItem Content="Normal" />
-                    <ComboBoxItem Content="Above Normal" />
-                    <ComboBoxItem Content="High" />
-                    <ComboBoxItem Content="Realtime" />
-                </ComboBox>
-                <TextBox x:Name="ProcessNameTextBox" Width="200" Margin="5"/>
-                <Button Content="Launch Process" Width="120" Margin="5" Click="LaunchProcess_Click"/>
-            </StackPanel>
+            <!-- Панель управления -->
+            <StackPanel Grid.Row="1" Orientation="Vertical" Margin="10">
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                    <Button Content="End Process" Width="100" Margin="5" Click="EndProcess_Click"/>
+                    <Button Content="Change Priority" Width="120" Margin="5" Click="ChangePriority_Click"/>
+                    <!-- ComboBox для выбора приоритета -->
+                    <ComboBox x:Name="PriorityComboBox" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" Margin="10,5,10,0">
+                        <ComboBoxItem Content="Low" />
+                        <ComboBoxItem Content="Below Normal" />
+                        <ComboBoxItem Content="Normal" />
+                        <ComboBoxItem Content="Above Normal" />
+                        <ComboBoxItem Content="High" />
+                        <ComboBoxItem Content="Realtime" />
+                    </ComboBox>
+                    <TextBox x:Name="ProcessNameTextBox" Width="200" Margin="5"/>
+                    <Button Content="Launch Process" Width="120" Margin="5" Click="LaunchProcess_Click"/>
+                </StackPanel>
 
-            <!-- Поиск и обновление -->
-            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                <TextBox x:Name="SearchTextBox" Width="200" Margin="5"/>
-                <Button Content="Search" Width="100" Margin="5" Click="SearchProcess_Click"/>
-                <Button Content="Refresh" Width="100" Margin="5" Click="RefreshButton_Click"/>
+                <!-- Поиск и обновление -->
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                    <TextBox x:Name="SearchTextBox" Width="200" Margin="5"/>
+                    <Button Content="Search" Width="100" Margin="5" Click="SearchProcess_Click"/>
+                    <Button Content="Refresh" Width="100" Margin="5" Click="RefreshButton_Click"/>
+                </StackPanel>
+
+                <!--- Подробная информация о процессе -->
+                <StackPanel>
+
+                </StackPanel>
+
+                <!--- Логи -->
+                <StackPanel>
+                    <TextBlock x:Name="LogsTextBox">Logs</TextBlock>
+                    <ListBox x:Name="LogListBox" Height="100"/>
+                </StackPanel>
             </StackPanel>
-            
-            <!--- Подробная информация о процессе -->
-            <StackPanel>
-                
-            </StackPanel>
-            
-            <!--- Логи -->
-            <StackPanel>
-                <TextBlock x:Name="LogsTextBox">Logs</TextBlock>
-                <ListBox x:Name="LogListBox" Height="100"/>
-            </StackPanel>
-        </StackPanel>
+        </Grid>
     </Grid>
 </Window>

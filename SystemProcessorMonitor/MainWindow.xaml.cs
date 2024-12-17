@@ -39,12 +39,14 @@ namespace SystemProcessorMonitor
 
         private async void RefreshProcesses()
         {
+            SpinnerGrid.Visibility = Visibility.Visible;
             Processes.Clear();
             var processInfos = await processManager.GetProcessInfos();
             foreach (var processInfo in processInfos.Where(p => p != null))
             {
                 Processes.Add(processInfo);
             }
+            SpinnerGrid.Visibility = Visibility.Collapsed;
         }
 
         private void EndProcess_Click(object sender, RoutedEventArgs e)

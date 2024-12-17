@@ -24,17 +24,37 @@ namespace SystemProcessorMonitor
         {
             InitializeComponent();
             Title = $"Details for {process.ProcessName}";
-            var details = $"Process ID: {process.Id}\n" +
-                          $"Name: {process.ProcessName}\n" +
-                          $"Memory Usage: {process.WorkingSet64 / (1024 * 1024)} MB\n" +
-                          $"Threads: {process.Threads.Count}\n" +
-                          $"Start Time: {process.StartTime}";
-            Content = new TextBlock
+            ProcessNameTextBlock.Text = process.ProcessName;
+
+            var threads = process.Threads;
+
+            StringBuilder sb = new StringBuilder();
+            foreach (ProcessThread thread in threads)
             {
-                Text = details,
-                Padding = new Thickness(10),
-                TextWrapping = TextWrapping.Wrap
+                sb.Append($"Thread ID: {thread.Id}, Start Time: {thread.StartTime}\n");
+            }
+            ThreadsTextBlock.Text = sb.ToString();
+
+            FilesTextBlock.Text = GetOpenFiles(process.Id);
+        }
+
+        private string GetOpenFiles(int processId)
+        {
+            ProcessStartInfo psi = new ProcessStartInfo
+            {
+                FileName = "handle.exe",
+                Arguments = $"-p {processId}",
+                RedirectStandardOutput = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
             };
+
+            using (Process process = Process.Start(psi))
+            {
+                string output = process.StandardOutput.ReadToEnd();
+                return string.Join("\n", output.Split('\n').Skip(5));
+            }
+
         }
     }
 }

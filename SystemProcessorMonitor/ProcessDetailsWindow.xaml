@@ -5,8 +5,47 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SystemProcessorMonitor"
         mc:Ignorable="d"
-        Title="Window1" Height="450" Width="800">
-    <Grid>
-        
-    </Grid>
+        Title="ProcessDetails" Height="450" Width="800">
+    <ScrollViewer>
+        <Grid Margin="10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <!-- Название процесса -->
+                <RowDefinition Height="Auto"/>
+                <!-- Основная информация -->
+                <RowDefinition Height="*"/>
+                <!-- ListBox с мониторингом -->
+            </Grid.RowDefinitions>
+
+            <!-- Заголовок с названием процесса -->
+            <TextBlock x:Name="ProcessNameTextBlock"
+                   Text="Process Name"
+                   FontSize="20"
+                   FontWeight="Bold"
+                   Foreground="#007ACC"
+                   HorizontalAlignment="Center"
+                   Margin="0,0,0,10"/>
+
+            <!-- Панель с основной информацией -->
+            <StackPanel Grid.Row="1" Margin="0,0,0,10">
+                <TextBlock Text="Threads:" FontWeight="Bold" Margin="0,5"/>
+                <TextBlock x:Name="ThreadsTextBlock" Text="N/A" Margin="0,0,0,10"/>
+
+                <TextBlock Text="Open Files:" FontWeight="Bold" Margin="0,5"/>
+                <TextBlock x:Name="FilesTextBlock" Text="N/A" Margin="0,0,0,10"/>
+
+                <TextBlock Text="Network Connections:" FontWeight="Bold" Margin="0,5"/>
+                <TextBlock x:Name="NetworkTextBlock" Text="N/A" Margin="0,0,0,10"/>
+            </StackPanel>
+
+            <!-- ListBox для мониторинга ресурсов -->
+            <GroupBox 
+                Grid.Row="2" 
+                Header="Resource Monitoring" 
+                FontWeight="Bold"
+                MinHeight="200">
+                <ListBox x:Name="ResourceMonitoringListBox" />
+            </GroupBox>
+        </Grid>
+    </ScrollViewer>
 </Window>

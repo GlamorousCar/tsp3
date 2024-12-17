@@ -34,8 +34,11 @@
                 <TextBlock Text="Open Files:" FontWeight="Bold" Margin="0,5"/>
                 <TextBlock x:Name="FilesTextBlock" Text="N/A" Margin="0,0,0,10"/>
 
-                <TextBlock Text="Network Connections:" FontWeight="Bold" Margin="0,5"/>
-                <TextBlock x:Name="NetworkTextBlock" Text="N/A" Margin="0,0,0,10"/>
+                <TextBlock Text="TCP Network Connections:" FontWeight="Bold" Margin="0,5"/>
+                <TextBlock x:Name="TCPNetworkTextBlock" Text="N/A" Margin="0,0,0,10"/>
+
+                <TextBlock Text="UDP Network Connections:" FontWeight="Bold" Margin="0,5"/>
+                <TextBlock x:Name="UDPNetworkTextBlock" Text="N/A" Margin="0,0,0,10"/>
             </StackPanel>
 
             <!-- ListBox для мониторинга ресурсов -->

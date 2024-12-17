@@ -39,7 +39,7 @@ namespace SystemProcessorMonitor
             // Memory Usage
             long workingSet = curProcess.WorkingSet64 / (1024 * 1024);
 
-            string message = $"CPU: {cpu:F3}% | Память: {workingSet} MB | Чтение диска: {diskRead:F2}% | Запись диска: {diskWrite:F2}%";
+            string message = $"CPU: {cpu:F3}% | Memory: {workingSet} MB | Disk Reading: {diskRead:F2}% | Disk Writing: {diskWrite:F2}%";
             return message;    
         }
     }

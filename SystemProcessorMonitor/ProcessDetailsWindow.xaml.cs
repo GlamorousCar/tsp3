@@ -46,15 +46,16 @@ namespace SystemProcessorMonitor
 
             ProcessNameTextBlock.Text = process.ProcessName;
 
-            startTimer();
+            StartTimer();
 
+            ShowThreads(process);
             ShowOpenFiles(process.Id);
 
             ShowTCPNetworks(process.Id);
             ShowUDPNetworks(process.Id);    
         }
 
-        private void startTimer()
+        private void StartTimer()
         {
             timer = new System.Timers.Timer(5000);
             timer.Elapsed += MonitorResource;

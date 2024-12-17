@@ -7,7 +7,9 @@ using System.Net;
 using System.Net.NetworkInformation;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -54,7 +56,6 @@ namespace SystemProcessorMonitor
         UDP_TABLE_OWNER_PID,
         UDP_TABLE_OWNER_MODULE
     }
-
 
     // Enum for different possible states of TCP connection
     public enum MibTcpState
@@ -390,11 +391,29 @@ namespace SystemProcessorMonitor
 
     public partial class ProcessDetailsWindow : Window
     {
+        private static System.Timers.Timer timer;
+        private PerformanceCounter cpuCounter;
+        private PerformanceCounter diskReadCounter;
+        private PerformanceCounter diskWriteCounter;
+        private Process curProcess;
+
         public ProcessDetailsWindow(Process process)
         {
             InitializeComponent();
             Title = $"Details for {process.ProcessName}";
             ProcessNameTextBlock.Text = process.ProcessName;
+
+            cpuCounter = new PerformanceCounter("Process", "% Processor Time", process.ProcessName, true);
+            diskReadCounter = new PerformanceCounter("Process", "IO Read Bytes/sec", process.ProcessName, true);
+            diskWriteCounter = new PerformanceCounter("Process", "IO Write Bytes/sec", process.ProcessName, true);
+
+            curProcess = process;
+
+            timer = new System.Timers.Timer(5000);
+            timer.Elapsed += MonitorResource;
+            timer.AutoReset = true;
+            timer.Enabled = true;
+            timer.Start();
 
             var threads = process.Threads;
 
@@ -449,6 +468,35 @@ namespace SystemProcessorMonitor
                 return string.Join("\n", output.Split('\n').Skip(5));
             }
 
+        }
+
+        private void MonitorResource(object sender, ElapsedEventArgs e)
+        {
+            // Первый вызов NextValue() может вернуть 0, поэтому вызываем дважды с задержкой
+            cpuCounter.NextValue();
+            Thread.Sleep(100);
+            float cpu = cpuCounter.NextValue();
+
+            // Disk Activity
+            float diskRead = diskReadCounter.NextValue() / 1024;
+            float diskWrite = diskWriteCounter.NextValue() / 1024;
+
+            // Memory Usage
+            long workingSet = curProcess.WorkingSet64 / (1024 * 1024);
+
+            string message = $"CPU: {cpu:F3}% | Память: {workingSet} MB | Чтение диска: {diskRead:F2}% | Запись диска: {diskWrite:F2}%";
+
+            Dispatcher.Invoke(() =>
+            {
+                ResourceMonitoringListBox.Items.Add(message);
+            });
+        }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            base.OnClosed(e);
+            timer.Elapsed -= MonitorResource;
+            timer.Stop();
         }
     }
 }

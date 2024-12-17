@@ -22,23 +22,17 @@ namespace SystemProcessorMonitor
     /// </summary>
     /// 
 
-    public class ProcessInfo
-    {
-        public int PID { get; set; }
-        public string Name { get; set; }
-        public double Memory { get; set; }
-        public string CPU { get; set; }
-    }
-
     public partial class MainWindow : Window
     {
 
         public ObservableCollection<ProcessInfo> Processes { get; set; } = new ObservableCollection<ProcessInfo>();
+        private ProcessManager processManager;
 
         public MainWindow()
         {
             InitializeComponent();
 
+            processManager = new ProcessManager();
             DataContext = this;
             RefreshProcesses();
         }
@@ -46,43 +40,11 @@ namespace SystemProcessorMonitor
         private async void RefreshProcesses()
         {
             Processes.Clear();
-            var processes = Process.GetProcesses();
-
-            var tasks = processes.Select(async process =>
-            {
-                try
-                {
-                    var cpuUsage = await GetCpuUsageAsync(process);
-                    return new ProcessInfo
-                    {
-                        PID = process.Id,
-                        Name = process.ProcessName,
-                        Memory = process.WorkingSet64 / (1024 * 1024),
-                        CPU = cpuUsage.ToString("0.000")
-                    };
-                }
-                catch
-                {
-                    return null;
-                }
-            }).ToArray();
-
-            var processInfos = await Task.WhenAll(tasks);
+            var processInfos = await processManager.GetProcessInfos();
             foreach (var processInfo in processInfos.Where(p => p != null))
             {
                 Processes.Add(processInfo);
             }
-        }
-
-        private async Task<double> GetCpuUsageAsync(Process process)
-        {
-            return await Task.Run(() =>
-            {
-                var cpuCounter = new PerformanceCounter("Process", "% Processor Time", process.ProcessName, true);
-                cpuCounter.NextValue(); // Первая выборка всегда 0, ждем для получения актуального значения
-                System.Threading.Thread.Sleep(50);
-                return cpuCounter.NextValue() / Environment.ProcessorCount;
-            });
         }
 
         private void EndProcess_Click(object sender, RoutedEventArgs e)
@@ -91,8 +53,7 @@ namespace SystemProcessorMonitor
             {
                 try
                 {
-                    var process = Process.GetProcessById(selectedProcess.PID);
-                    process.Kill();
+                    processManager.KillProcessByPID(selectedProcess.PID);
                     LogAction($"Process terminated: {selectedProcess.Name}");
                     RefreshProcesses();
                 }
@@ -109,7 +70,7 @@ namespace SystemProcessorMonitor
             {
                 try
                 {
-                    var process = Process.GetProcessById(selectedProcess.PID);
+                    var process = processManager.GetProcessByPID(selectedProcess.PID);
                     var selectedPriority = (PriorityComboBox.SelectedItem as ComboBoxItem)?.Content.ToString();
 
                     if (selectedPriority != null)
@@ -156,7 +117,7 @@ namespace SystemProcessorMonitor
                 var processName = ProcessNameTextBox.Text;
                 if (!string.IsNullOrWhiteSpace(processName))
                 {
-                    Process.Start(processName);
+                    processManager.LaunchProcess(processName);
                     LogAction($"Process launched: {processName}");
                 }
             }
@@ -171,13 +132,7 @@ namespace SystemProcessorMonitor
             var query = SearchTextBox.Text;
             if (!string.IsNullOrWhiteSpace(query))
             {
-                var results = Processes
-                    .Where(p => 
-                
-                    p.Name.IndexOf(query, StringComparison.OrdinalIgnoreCase) >= 0
-                    ||
-                    p.PID.ToString().IndexOf(query, StringComparison.OrdinalIgnoreCase) >= 0
-                    ).ToList();
+                var results = processManager.SearchProcessInfos(query, Processes.ToList());
 
                 Processes.Clear();
                 foreach (var process in results)

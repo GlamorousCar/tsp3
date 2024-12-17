@@ -101,5 +101,11 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ProcessManager\ProcessManager.csproj">
+      <Project>{5c70e2cf-81ab-4dc9-96fa-b53d27076e83}</Project>
+      <Name>ProcessManager</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

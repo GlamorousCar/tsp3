@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SystemProcessorMonitor"
         mc:Ignorable="d"
-        Title="ProcessDetails" Height="450" Width="800">
+        Title="ProcessDetails" Height="650" Width="1000">
     <ScrollViewer>
         <Grid Margin="10">
             <Grid.RowDefinitions>
@@ -46,8 +46,11 @@
                 Grid.Row="2" 
                 Header="Resource Monitoring" 
                 FontWeight="Bold"
-                MinHeight="200">
-                <ListBox x:Name="ResourceMonitoringListBox" />
+                Height="300">
+                <ListBox 
+                    x:Name="ResourceMonitoringListBox" 
+                    ScrollViewer.VerticalScrollBarVisibility="Visible"
+                    />
             </GroupBox>
         </Grid>
     </ScrollViewer>

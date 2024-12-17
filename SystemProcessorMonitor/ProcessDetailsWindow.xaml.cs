@@ -404,8 +404,8 @@ namespace SystemProcessorMonitor
             ProcessNameTextBlock.Text = process.ProcessName;
 
             cpuCounter = new PerformanceCounter("Process", "% Processor Time", process.ProcessName, true);
-            diskReadCounter = new PerformanceCounter("Process", "IO Read Bytes/sec", process.ProcessName, true);
-            diskWriteCounter = new PerformanceCounter("Process", "IO Write Bytes/sec", process.ProcessName, true);
+            diskReadCounter = new PerformanceCounter("LogicalDisk", "% Disk Read Time", "_Total", true);
+            diskWriteCounter = new PerformanceCounter("LogicalDisk", "% Disk Write Time", "_Total", true);
 
             curProcess = process;
 
@@ -477,9 +477,9 @@ namespace SystemProcessorMonitor
             Thread.Sleep(100);
             float cpu = cpuCounter.NextValue();
 
-            // Disk Activity
-            float diskRead = diskReadCounter.NextValue() / 1024;
-            float diskWrite = diskWriteCounter.NextValue() / 1024;
+
+            float diskRead = diskReadCounter.NextValue();
+            float diskWrite = diskWriteCounter.NextValue();
 
             // Memory Usage
             long workingSet = curProcess.WorkingSet64 / (1024 * 1024);

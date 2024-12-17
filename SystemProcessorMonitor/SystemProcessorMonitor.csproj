@@ -102,9 +102,21 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\FileManager\FileManager.csproj">
+      <Project>{c416ba4c-7e47-41b5-9e79-8fdc060b303e}</Project>
+      <Name>FileManager</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\NetworkManager\NetworkManager.csproj">
+      <Project>{1df8c1d7-3a81-4e35-9dbb-58a679a8e39a}</Project>
+      <Name>NetworkManager</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ProcessManager\ProcessManager.csproj">
       <Project>{5c70e2cf-81ab-4dc9-96fa-b53d27076e83}</Project>
       <Name>ProcessManager</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ResourceMonitor\ResourceMonitor.csproj">
+      <Project>{0d49cb2b-19ec-446d-9928-60256724be4b}</Project>
+      <Name>ResourceMonitor</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
